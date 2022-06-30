@@ -14,4 +14,4 @@ const showStats = async(req, res) => {
     res.send('show stats');
 }
 
-export { createJob, getAllJobs, updateJob, deleteJob, showStats }
+export { createJob, getAllJobs, updateJob, deleteJob, showStats };
