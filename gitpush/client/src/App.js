@@ -4,8 +4,15 @@ import {
   Landing,
   Register,
   Error,
-  Dashboard
+  ProtectedRoute
 } from './pages';
+import {
+  AddJob,
+  AllJobs,
+  Profile,
+  SharedLayout,
+  Stats
+} from './pages/dashboard'
 
 /*const Button = styled.button`
   background : red;
@@ -23,7 +30,12 @@ function App() {
     <BrowserRouter>
       
       <Routes>
-        <Route path='/' element={<Dashboard />} />
+        <Route path='/' element={<ProtectedRoute><SharedLayout /></ProtectedRoute>}>
+          <Route  path='add-job' element={<AddJob />} />
+          <Route path='all-jobs' element={<AllJobs />} />
+          <Route path='profile' element={<Profile />} />
+          <Route index  element={<Stats />} />
+        </Route>
         <Route path='/register' element={<Register />} />
         <Route path='/landing' element={<Landing />} />
         <Route path='*' element={<Error />} />

@@ -10,11 +10,16 @@ import {
   LOGIN_USER_BEGIN,
   LOGIN_USER_SUCCESS,
   LOGIN_USER_ERROR,
+  SETUP_USER_BEGIN,
+  SETUP_USER_ERROR,
+  SETUP_USER_SUCCESS,
+  TOGGLE_SIDEBAR,
+  LOGOUT_USER
 } from "./actions";
 
 const token = localStorage.getItem("token");
 const userLocation = localStorage.getItem("location");
-const user = localStorage.getItem("user");
+const user = localStorage.getItem("user"); //we get string here so we are doing JSON.parse(user) down
 
 const initialState = {
   isLoading: false,
@@ -25,6 +30,7 @@ const initialState = {
   token: token,
   userLocation: userLocation || "",
   jobLocation: userLocation || "",
+  showSideBar: false
 };
 const AppContext = React.createContext();
 const AppProvider = ({ children }) => {
@@ -96,6 +102,40 @@ const AppProvider = ({ children }) => {
     clearAlert();
   };
 
+  const setUpUser = async ({ currentUser, endPoint, alertText }) => {
+    dispatch({ type: SETUP_USER_BEGIN });
+
+    try {
+      const { data } = await axios.post(
+        `/api/v1/auth/${endPoint}`,
+        currentUser
+      );
+      //  console.log(response);
+      const { user, token, location } = data;
+      dispatch({
+        type: SETUP_USER_SUCCESS,
+        payload: { user, token, location, alertText },
+      });
+      addUserToLocalStorage({ user, token, location });
+    } catch (error) {
+      //  console.log(error.response);
+      dispatch({
+        type: SETUP_USER_ERROR,
+        payload: { msg: error.response.data.msg },
+      });
+    }
+    clearAlert();
+  };
+
+  const toggleSideBar = () => {
+     dispatch({type:TOGGLE_SIDEBAR})
+  }
+
+   const logoutUser = () => {
+     dispatch({ type: LOGOUT_USER })
+     removeUserFromLocalStorage();
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -103,6 +143,9 @@ const AppProvider = ({ children }) => {
         displayAlert,
         registerUser,
         loginUser,
+        setUpUser,
+        toggleSideBar,
+        logoutUser
       }}
     >
       {children}

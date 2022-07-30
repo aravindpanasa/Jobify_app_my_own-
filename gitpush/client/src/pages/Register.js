@@ -15,8 +15,15 @@ const initialState = {
 const Register = () => {
   const navigate = useNavigate();
   const [values, setValues] = useState(initialState);
-  const { user, isLoading, showAlert, displayAlert, registerUser, loginUser } =
-    useAppContext();
+  const {
+    user,
+    isLoading,
+    showAlert,
+    displayAlert,
+    registerUser,
+    loginUser,
+    setUpUser,
+  } = useAppContext();
   //  console.log(state)
 
   const toogleMember = () => {
@@ -36,9 +43,17 @@ const Register = () => {
     const currentUser = { name, email, password };
     if (isMember) {
       // console.log("Already a member");
-      loginUser(currentUser);
+      setUpUser({
+        currentUser,
+        endPoint: "login",
+        alertText: "Login Successfull! Redirecting.....",
+      });
     } else {
-      registerUser(currentUser);
+      setUpUser({
+        currentUser,
+        endPoint: "register",
+        alertText: "User created! Redirecting.....",
+      });
     }
   };
 
